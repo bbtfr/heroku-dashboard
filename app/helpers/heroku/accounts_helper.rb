@@ -1,0 +1,2 @@
+module Heroku::AccountsHelper
+end

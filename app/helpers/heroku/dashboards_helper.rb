@@ -1,0 +1,2 @@
+module Heroku::DashboardsHelper
+end
