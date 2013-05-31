@@ -23,7 +23,9 @@ describe Heroku::AccountsController do
   # This should return the minimal set of attributes required to create a valid
   # Heroku::Account. As you add validations to Heroku::Account, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "apikey" => "MyString" } }
+  let(:valid_attributes) { attributes_for :heroku_account }
+
+  let(:account) { create :heroku_account }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -32,7 +34,6 @@ describe Heroku::AccountsController do
 
   describe "GET index" do
     it "assigns all heroku_accounts as @heroku_accounts" do
-      account = Heroku::Account.create! valid_attributes
       get :index, {}, valid_session
       assigns(:heroku_accounts).should eq([account])
     end
@@ -40,7 +41,6 @@ describe Heroku::AccountsController do
 
   describe "GET show" do
     it "assigns the requested heroku_account as @heroku_account" do
-      account = Heroku::Account.create! valid_attributes
       get :show, {:id => account.to_param}, valid_session
       assigns(:heroku_account).should eq(account)
     end
@@ -55,7 +55,6 @@ describe Heroku::AccountsController do
 
   describe "GET edit" do
     it "assigns the requested heroku_account as @heroku_account" do
-      account = Heroku::Account.create! valid_attributes
       get :edit, {:id => account.to_param}, valid_session
       assigns(:heroku_account).should eq(account)
     end
@@ -101,7 +100,6 @@ describe Heroku::AccountsController do
   describe "PUT update" do
     describe "with valid params" do
       it "updates the requested heroku_account" do
-        account = Heroku::Account.create! valid_attributes
         # Assuming there are no other heroku_accounts in the database, this
         # specifies that the Heroku::Account created on the previous line
         # receives the :update_attributes message with whatever params are
@@ -111,13 +109,11 @@ describe Heroku::AccountsController do
       end
 
       it "assigns the requested heroku_account as @heroku_account" do
-        account = Heroku::Account.create! valid_attributes
         put :update, {:id => account.to_param, :heroku_account => valid_attributes}, valid_session
         assigns(:heroku_account).should eq(account)
       end
 
       it "redirects to the heroku_account" do
-        account = Heroku::Account.create! valid_attributes
         put :update, {:id => account.to_param, :heroku_account => valid_attributes}, valid_session
         response.should redirect_to(account)
       end
@@ -125,7 +121,6 @@ describe Heroku::AccountsController do
 
     describe "with invalid params" do
       it "assigns the heroku_account as @heroku_account" do
-        account = Heroku::Account.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         Heroku::Account.any_instance.stub(:save).and_return(false)
         put :update, {:id => account.to_param, :heroku_account => { "apikey" => "invalid value" }}, valid_session
@@ -133,7 +128,6 @@ describe Heroku::AccountsController do
       end
 
       it "re-renders the 'edit' template" do
-        account = Heroku::Account.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         Heroku::Account.any_instance.stub(:save).and_return(false)
         put :update, {:id => account.to_param, :heroku_account => { "apikey" => "invalid value" }}, valid_session
@@ -144,14 +138,12 @@ describe Heroku::AccountsController do
 
   describe "DELETE destroy" do
     it "destroys the requested heroku_account" do
-      account = Heroku::Account.create! valid_attributes
       expect {
         delete :destroy, {:id => account.to_param}, valid_session
       }.to change(Heroku::Account, :count).by(-1)
     end
 
     it "redirects to the heroku_accounts list" do
-      account = Heroku::Account.create! valid_attributes
       delete :destroy, {:id => account.to_param}, valid_session
       response.should redirect_to(heroku_accounts_url)
     end
