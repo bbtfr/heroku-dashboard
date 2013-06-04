@@ -32,12 +32,17 @@ module Heroku::Base
       # Find every resource
       def find_every(options)
         begin
+          
           prefix_options, query_options = split_options(options[:params])
           path = collection_path(prefix_options, query_options)
 
           password = connection.password
-          every = Heroku::Account.all.reduce([]) do |ret, account|
-            connection.password = account.apikey
+          apikeys = options[:apikeys] || [options[:apikey]]
+          apikeys = Heroku::Account.pluck(:apikey) unless apikeys.any?
+          Rails.logger.debug "Connect to Heroku with apikeys: #{apikeys}"
+
+          every = apikeys.reduce([]) do |ret, apikey|
+            connection.password = apikey
             ret += (format.decode(connection.get(path, headers).body) || [])
           end
           connection.password = password
@@ -56,15 +61,26 @@ module Heroku::Base
         path = element_path(scope, prefix_options, query_options)
 
         password = connection.password
-        every = Heroku::Account.all.each do |account|
-          connection.password = account.apikey
-          single = format.decode(connection.get(path, headers).body)
-          if single.present?
-            connection.password = password
-            return instantiate_record(single, prefix_options)
+        apikeys = options[:apikeys] || [options[:apikey]]
+        apikeys = Heroku::Account.pluck(:apikey) unless apikeys.any?
+        Rails.logger.debug "Connect to Heroku with apikeys: #{apikeys}"
+
+        apikeys.each do |apikey|
+          connection.password = apikey
+          
+          begin
+            single = format.decode(connection.get(path, headers).body)
+          rescue ActiveResource::ResourceNotFound
+            next
           end
+
+          connection.password = password
+          return instantiate_record(single, prefix_options)
         end
         connection.password = password
+          
+        raise ActiveResource::ResourceNotFound
+        ## TODO
       end
   end
 end

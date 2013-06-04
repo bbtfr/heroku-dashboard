@@ -9,4 +9,6 @@ describe Heroku::Account do
 
   it { should validate_presence_of :apikey }
   it { should validate_uniqueness_of :apikey }
+  
+  its(:apps) { should be_any }
 end
