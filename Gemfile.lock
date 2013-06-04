@@ -63,6 +63,7 @@ GEM
       execjs
     coffee-script-source (1.6.2)
     columnize (0.3.6)
+    database_cleaner (1.0.1)
     debugger (1.6.0)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -229,6 +230,7 @@ DEPENDENCIES
   cached_resource!
   capybara
   coffee-rails (~> 4.0.0)
+  database_cleaner
   factory_girl_rails
   guard-rspec
   jbuilder (~> 1.0.1)

@@ -138,6 +138,7 @@ describe Heroku::AccountsController do
 
   describe "DELETE destroy" do
     it "destroys the requested heroku_account" do
+      account = create :heroku_account
       expect {
         delete :destroy, {:id => account.to_param}, valid_session
       }.to change(Heroku::Account, :count).by(-1)
